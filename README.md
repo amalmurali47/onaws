@@ -39,7 +39,7 @@ awsipcheck -bucket http://dropbox.s3.amazonaws.com
 
 # Output
 
-If the IP falls in the AWS IP range, `awsipcheck` will return the details:
+If the IP/hostname falls in the AWS IP range, `awsipcheck` will return the details:
 
 ```
 52.219.47.34 is an AWS IP. Details:

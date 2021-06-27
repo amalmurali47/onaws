@@ -1,6 +1,6 @@
 '''Simple library to check if a hostname belongs to AWS IP space.'''
 
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 import argparse
 import ipaddress
@@ -38,12 +38,28 @@ def generate_s3_hostname(url):
         return '{}.s3.amazonaws.com'.format(url)
 
 
-def find_prefix(ip):
-    prefixes = get_range_prefixes()
+def find_prefix(prefixes, ip):
+    amz_prefix = None
+    non_amz_prefix = None
+
+    # We probably can't rely on the order of prefixes being alphabetical.
+    # So try to find any non-AMAZON services with higher precedence.
+    # If none found, return the AMAZON service.
+
     for prefix in prefixes:
         subnet = ipaddress.ip_network(prefix['ip_prefix'])
+
         if ip in subnet:
-            return prefix
+            if prefix['service'] == 'AMAZON':
+                amz_prefix = prefix
+            else:
+                non_amz_prefix = prefix
+                break
+
+    if non_amz_prefix:
+        return non_amz_prefix
+    elif amz_prefix:
+        return amz_prefix
 
 
 def parse_args():
@@ -59,7 +75,8 @@ def parse_args():
 
 def main():
     args = parse_args()
-    
+    prefixes = get_range_prefixes()
+
     if args.ip:
         ip = args.ip
         try:
@@ -67,7 +84,7 @@ def main():
         except ValueError as e:
             print(e)
         else:
-            results = find_prefix(ip_addr)
+            results = find_prefix(prefixes, ip_addr)
             if results:
                 if args.only_region:
                     print(results['region'])
@@ -84,7 +101,7 @@ def main():
         hostname = args.hostname
         ip = resolve(hostname)
         ip_addr = ipaddress.ip_address(ip)
-        results = find_prefix(ip_addr)
+        results = find_prefix(prefixes, ip_addr)
         if results:
             if args.only_region:
                 print(results['region'])
@@ -102,7 +119,7 @@ def main():
         hostname = generate_s3_hostname(bucket)
         ip = resolve(hostname)
         ip_addr = ipaddress.ip_address(ip)
-        results = find_prefix(ip_addr)
+        results = find_prefix(prefixes, ip_addr)
         if results:
             if args.only_region:
                 print(results['region'])
