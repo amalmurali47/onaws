@@ -1,6 +1,6 @@
 # awsipcheck
 
-`awsipcheck` is a simple tool to check if an IP/hostname belongs to the AWS IP space or not.
+`awsipcheck` is a simple tool to check if an IP/hostname belongs to the AWS IP space or not. This is often useful while performing recon or when performing S3 bucket takeovers.
 
 ![awsipcheck](https://user-images.githubusercontent.com/3582096/123546169-219ec500-d779-11eb-8fc6-7ed6ecd990bd.png)
 
