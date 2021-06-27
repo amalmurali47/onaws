@@ -1,6 +1,6 @@
 '''Simple library to check if a hostname belongs to AWS IP space.'''
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 import argparse
 import ipaddress
@@ -102,5 +102,15 @@ def main():
         hostname = generate_s3_hostname(bucket)
         ip = resolve(hostname)
         ip_addr = ipaddress.ip_address(ip)
-        print(find_prefix(ip_addr))
-
+        results = find_prefix(ip_addr)
+        if results:
+            if args.only_region:
+                print(results['region'])
+            else:
+                print(f'{bucket} appears to point to an AWS IP. Details:')
+                print(json.dumps(results, indent=4))
+        else:
+            if not args.only_region:
+                print(f'{hostname} → {ip_addr} is not an AWS IP')
+            else:
+                print('False')
