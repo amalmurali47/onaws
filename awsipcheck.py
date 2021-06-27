@@ -1,6 +1,6 @@
 '''Simple library to check if a hostname belongs to AWS IP space.'''
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 import argparse
 import ipaddress
@@ -50,7 +50,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Check if a host belongs to AWS')
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-ip", action='store', dest='ip', help="IP to check. Example: 123.123.123.123")
-    group.add_argument("-hostname", action='store', dest='hostname', help="Hostname to check. Example: dropbox.s3.amazonaws.com")
+    group.add_argument("-hostname", action='store', dest='hostname', help="Hostname to check. Example: google.com")
     group.add_argument("-bucket", action='store', dest='bucket_name', help="S3 bucket to check. Example: dropbox")
     parser.add_argument('-only-region', action='store_true', dest='only_region', help='Specify this flag to have only region info in the output')
     args = parser.parse_args()
@@ -72,7 +72,7 @@ def main():
                 if args.only_region:
                     print(results['region'])
                 else:
-                    print(f'{ip} is an AWS IP. Details:')
+                    print(f'{ip} is an AWS IP:')
                     print(json.dumps(results, indent=4))
             else:
                 if not args.only_region:
@@ -89,7 +89,7 @@ def main():
             if args.only_region:
                 print(results['region'])
             else:
-                print(f'{hostname} appears to point to an AWS IP. Details:')
+                print(f'{hostname} appears to point to an AWS IP:')
                 print(json.dumps(results, indent=4))
         else:
             if not args.only_region:
@@ -107,7 +107,7 @@ def main():
             if args.only_region:
                 print(results['region'])
             else:
-                print(f'{bucket} appears to point to an AWS IP. Details:')
+                print(f'{bucket} appears to point to an AWS IP:')
                 print(json.dumps(results, indent=4))
         else:
             if not args.only_region:
