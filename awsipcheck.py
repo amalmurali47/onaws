@@ -17,9 +17,9 @@ AWS_IP_RANGES_URL = 'https://ip-ranges.amazonaws.com/ip-ranges.json'
 
 def get_range_prefixes():
     try:
-        data = requests.get(AWS_IP_RANGES_URL).json()
+        data = requests.get(AWS_IP_RANGES_URL, timeout=10).json()
     except Exception:
-        print('Failed to get IP ranges from AWS')
+        raise SystemExit('Failed to get IP ranges from AWS')
     else:
         return data['prefixes']
 
@@ -36,10 +36,6 @@ def is_ip(string):
         return ipaddress.ip_address(string)
     except ValueError:
         return False
-
-
-def is_bucket(string):
-    return '.' not in string
 
 
 def find_prefix(prefixes, ip):
