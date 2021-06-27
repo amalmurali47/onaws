@@ -1,12 +1,14 @@
 '''Simple library to check if a hostname belongs to AWS IP space.'''
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 import argparse
 import ipaddress
 import json
 import re
 import socket
+import sys
+from argparse import RawDescriptionHelpFormatter
 
 import requests
 
@@ -18,7 +20,6 @@ def get_range_prefixes():
         data = requests.get(AWS_IP_RANGES_URL).json()
     except Exception:
         print('Failed to get IP ranges from AWS')
-        return
     else:
         return data['prefixes']
 
@@ -27,15 +28,18 @@ def resolve(hostname):
     try:
         return socket.gethostbyname(hostname)
     except socket.gaierror:
-        raise SystemExit(f'Unable to resolve {hostname}. Exiting.')
+        return False
 
 
-def generate_s3_hostname(url):
-    match = re.search(r'(?:https?)://(\S+\.s3\.amazonaws\.com)', url)
-    if match is not None:
-        return match.group(1)
-    else:
-        return '{}.s3.amazonaws.com'.format(url)
+def is_ip(string):
+    try:
+        return ipaddress.ip_address(string)
+    except ValueError:
+        return False
+
+
+def is_bucket(string):
+    return '.' not in string
 
 
 def find_prefix(prefixes, ip):
@@ -45,7 +49,6 @@ def find_prefix(prefixes, ip):
     # We probably can't rely on the order of prefixes being alphabetical.
     # So try to find any non-AMAZON services with higher precedence.
     # If none found, return the AMAZON service.
-
     for prefix in prefixes:
         subnet = ipaddress.ip_network(prefix['ip_prefix'])
 
@@ -58,76 +61,62 @@ def find_prefix(prefixes, ip):
 
     if non_amz_prefix:
         return non_amz_prefix
-    elif amz_prefix:
-        return amz_prefix
+
+    return amz_prefix
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Check if a host belongs to AWS')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-ip", action='store', dest='ip', help="IP to check. Example: 123.123.123.123")
-    group.add_argument("-hostname", action='store', dest='hostname', help="Hostname to check. Example: google.com")
-    group.add_argument("-bucket", action='store', dest='bucket_name', help="S3 bucket to check. Example: dropbox")
-    parser.add_argument('-only-region', action='store_true', dest='only_region', help='Specify this flag to have only region info in the output')
+    parser = argparse.ArgumentParser(
+        description='Check if a hostname/IP belongs to AWS', 
+        epilog="Examples:\n\
+        awsipcheck 52.219.47.34\n\
+        awsipcheck flaws.cloud\n\
+        awsipcheck uber.s3.amazonaws.com\n",
+        formatter_class=RawDescriptionHelpFormatter
+    )
+    parser.add_argument('input', action='store', help='Input hostname / IP')
     args = parser.parse_args()
     return args
 
+
+def generate_response(result, ip_address=None, hostname=None):
+    if result:
+        response = {
+            'is_aws_ip': True,
+            'ip_address': ip_address,
+            'service': result['service'],
+            'region': result['region'],
+            'matched_subnet': result['ip_prefix']
+        }
+        if hostname:
+            response['hostname'] = hostname
+    else:
+        response = {'is_aws_ip': False}
+        
+    return json.dumps(response, indent=4)
+    
 
 def main():
     args = parse_args()
     prefixes = get_range_prefixes()
 
-    if args.ip:
-        ip = args.ip
-        try:
-            ip_addr = ipaddress.ip_address(ip)
-        except ValueError as e:
-            print(e)
-        else:
-            results = find_prefix(prefixes, ip_addr)
-            if results:
-                if args.only_region:
-                    print(results['region'])
-                else:
-                    print(f'{ip} is an AWS IP:')
-                    print(json.dumps(results, indent=4))
-            else:
-                if not args.only_region:
-                    print(f'{ip} is not an AWS IP')
-                else:
-                    print('False')            
+    input_str = args.input
 
-    elif args.hostname:
-        hostname = args.hostname
-        ip = resolve(hostname)
-        ip_addr = ipaddress.ip_address(ip)
-        results = find_prefix(prefixes, ip_addr)
-        if results:
-            if args.only_region:
-                print(results['region'])
-            else:
-                print(f'{hostname} appears to point to an AWS IP:')
-                print(json.dumps(results, indent=4))
+    if input_str:
+        if is_ip(input_str):
+            result = find_prefix(prefixes, ipaddress.ip_address(input_str))
+            response = generate_response(result, ip_address=input_str)
+            print(response)
         else:
-            if not args.only_region:
-                print(f'{hostname} → {ip_addr} is not an AWS IP')
+            ip_address = resolve(input_str)
+            if ip_address:                       
+                result = find_prefix(prefixes, ipaddress.ip_address(ip_address))
+                response = generate_response(result, hostname=input_str, ip_address=ip_address)
+                print(response)
             else:
-                print('False')
+                response = {'resolvable': False}
+                print(json.dumps(response, indent=4))        
 
-    elif args.bucket_name:
-        bucket = args.bucket_name
-        hostname = generate_s3_hostname(bucket)
-        ip = resolve(hostname)
-        ip_addr = ipaddress.ip_address(ip)
-        results = find_prefix(prefixes, ip_addr)
-        if results:
-            if args.only_region:
-                print(results['region'])
-            else:
-                print(f'{bucket} appears to point to an AWS IP:')
-                print(json.dumps(results, indent=4))
-        else:
-            if not args.only_region:
-                print(f'{hostname} → {ip_addr} is not an AWS IP')
-            else:
-                print('False')
+    
+if __name__ == "__main__":
+    main()
