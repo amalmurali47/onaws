@@ -1,0 +1,12 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "awsipcheck"
+author = "Amal Murali"
+author-email = "amalmurali47@gmail.com"
+home-page = "https://github.com/amalmurali47/awsipcheck"
+classifiers = [ "License :: OSI Approved :: MIT License",]
+description-file = "README.md"
+
