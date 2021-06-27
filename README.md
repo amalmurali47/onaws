@@ -5,10 +5,10 @@
 - Continuous recon of assets
 - Gather assets using a specific service (e.g. EC2)
 - Finding region information for S3 buckets
-- ... and so on
+- ... etc.
 
 
-![awsipcheck](https://user-images.githubusercontent.com/3582096/123551848-31c29e80-d791-11eb-87f1-98b1a9fb9512.png)
+![awsipcheck](https://user-images.githubusercontent.com/3582096/123559813-fe493980-d7bb-11eb-90f9-cd33942c0818.png)
 
 
 # Install
@@ -21,51 +21,34 @@ pip install awsipcheck
 
 ## Given an IP:
 ```
-awsipcheck -ip 52.219.47.34
+awsipcheck 52.219.47.34
 ```
 
 ## Given a hostname:
 
-```
-awsipcheck -hostname google.com
-```
-
-## Given a bucket name:
-
-You can also supply an S3 bucket name as input:
+A domain or subdomain can be passed as input:
 
 ```
-awsipcheck -bucket dropbox
+awsipcheck example.com
 ```
 
-Or the full bucket URL:
+You may also supply an S3 bucket hostname as input:
 
 ```
-awsipcheck -bucket http://dropbox.s3.amazonaws.com
+awsipcheck dropbox.s3.amazonaws.com
 ```
 
 # Output
 
-If the IP/hostname falls in the AWS IP range, `awsipcheck` will return the details:
+If the IP/hostname falls in the AWS IP range, `awsipcheck` will return the service, region and other details in the output:
 
 ```
-52.219.47.34 is an AWS IP. Details:
 {
-    "ip_prefix": "52.219.44.0/22",
-    "region": "eu-central-1",
-    "service": "AMAZON",
-    "network_border_group": "eu-central-1"
+    "is_aws_ip": true,
+    "ip_address": "52.218.196.155",
+    "service": "S3",
+    "region": "us-west-2",
+    "matched_subnet": "52.218.128.0/17",
+    "hostname": "flaws.cloud"
 }
-```
-
-If you only require the region in the output, you can specify the `-only-region` flag like so:
-
-```
-awsipcheck -bucket dropbox -only-region
-```
-
-And it will print just the region (and `False` otherwise):
-
-```
-eu-central-1
 ```
