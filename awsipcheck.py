@@ -1,6 +1,6 @@
 '''Simple library to check if a hostname belongs to AWS IP space.'''
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 import argparse
 import ipaddress
@@ -38,10 +38,11 @@ def generate_s3_hostname(url):
         return '{}.s3.amazonaws.com'.format(url)
 
 
-def find_prefix(ip):   
+def find_prefix(ip):
+    prefixes = get_range_prefixes()
     for prefix in prefixes:
         subnet = ipaddress.ip_network(prefix['ip_prefix'])
-        if ip_addr in subnet:
+        if ip in subnet:
             return prefix
 
 
@@ -58,7 +59,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    prefixes = get_range_prefixes()
     
     if args.ip:
         ip = args.ip
