@@ -20,7 +20,7 @@ awsipcheck -ip 52.219.47.34
 ## Given a hostname:
 
 ```
-awsipcheck dropbox.s3.amazonaws.com
+awsipcheck -hostname google.com
 ```
 
 ## Given a bucket name:
