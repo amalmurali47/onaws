@@ -10,3 +10,5 @@ home-page = "https://github.com/amalmurali47/awsipcheck"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 
+[tool.flit.scripts]
+awsipcheck = "awsipcheck:main"
