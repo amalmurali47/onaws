@@ -7,6 +7,7 @@ import json
 import re
 import socket
 import sys
+from collections import defaultdict
 
 import requests
 
@@ -74,3 +75,35 @@ def generate_response(result, ip_address=None, hostname=None):
         response = {'is_aws_ip': False}
         
     return response
+    
+
+def process_one(prefixes, host):
+    if is_ip(host):
+        result = find_prefix(prefixes, ipaddress.ip_address(host))
+        response = generate_response(result, ip_address=host)
+        return response
+    else:
+        ip_address = resolve(host)
+        if ip_address:
+            result = find_prefix(prefixes, ipaddress.ip_address(ip_address))
+            response = generate_response(result, hostname=host, ip_address=ip_address)
+            return response
+        else:
+            return {'resolvable': False}
+
+
+def process(prefixes, args):
+    if args['input']:
+        return json.dumps(process_one(prefixes, args['input']), indent=4)
+
+    results = defaultdict()
+    for host in args['hosts']:
+        print(f'Processing: {host}')
+        results[host] = process_one(prefixes, host)
+    return json.dumps(dict(results), indent=4)
+
+
+def run(prefixes, args):
+    # print(args['hosts'])
+    results = process(prefixes, args)
+    print(results)
