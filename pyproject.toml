@@ -3,12 +3,12 @@ requires = ["flit_core >=2,<4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.metadata]
-module = "awsipcheck"
+module = "onaws"
 author = "Amal Murali"
 author-email = "amalmurali47@gmail.com"
-home-page = "https://github.com/amalmurali47/awsipcheck"
+home-page = "https://github.com/amalmurali47/onaws"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 
 [tool.flit.scripts]
-awsipcheck = "awsipcheck:__main__.main"
+onaws = "onaws:__main__.main"

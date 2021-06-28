@@ -13,9 +13,9 @@ spec = {
         }
     ],
     'epilog': "Examples:\n\
-        awsipcheck 52.219.47.34\n\
-        awsipcheck flaws.cloud\n\
-        awsipcheck uber.s3.amazonaws.com\n",
+        onaws 52.219.47.34\n\
+        onaws flaws.cloud\n\
+        onaws uber.s3.amazonaws.com\n",
     'formatter_class': RawDescriptionHelpFormatter
 }
 
