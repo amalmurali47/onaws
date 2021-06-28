@@ -8,6 +8,9 @@ author = "Amal Murali"
 author-email = "amalmurali47@gmail.com"
 home-page = "https://github.com/amalmurali47/onaws"
 classifiers = [ "License :: OSI Approved :: MIT License",]
+requires = [
+    "requests",
+]
 description-file = "README.md"
 
 [tool.flit.scripts]
