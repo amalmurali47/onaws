@@ -8,7 +8,7 @@
 - ... etc.
 
 
-![onaws](https://user-images.githubusercontent.com/3582096/123628738-10b18a80-d831-11eb-8a1a-6b8cdb58dafd.png)
+![onaws](https://user-images.githubusercontent.com/3582096/123629032-684ff600-d831-11eb-8e22-7ab4bbac03e1.png)
 
 
 # Install
