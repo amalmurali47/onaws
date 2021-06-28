@@ -1,5 +1,6 @@
 import argparse
 import sys
+from argparse import RawDescriptionHelpFormatter
 
 spec = {
     'description': 'Check if a hostname/IP belongs to AWS',
@@ -10,12 +11,19 @@ spec = {
             'help': 'Input hostname / IP',
             'nargs': '?'
         }
-    ]
+    ],
+    'epilog': "Examples:\n\
+        awsipcheck 52.219.47.34\n\
+        awsipcheck flaws.cloud\n\
+        awsipcheck uber.s3.amazonaws.com\n",
+    'formatter_class': RawDescriptionHelpFormatter
 }
 
 def create_parser(spec):
     parser = argparse.ArgumentParser(
         description=spec['description'],
+        epilog=spec['epilog'],
+        formatter_class=spec['formatter_class']
     )
 
     for arg in spec['arguments']:
@@ -25,6 +33,7 @@ def create_parser(spec):
     return parser
 
 parser = create_parser(spec)
+
 
 def get_raw_input(input_str):
     if input_str is None:
