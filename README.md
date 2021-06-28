@@ -1,6 +1,6 @@
-# awsipcheck
+# onaws
 
-`awsipcheck` is a simple tool to check if an IP/hostname belongs to the AWS IP space or not. This has multiple applications:
+`onaws` is a simple tool to check if an IP/hostname belongs to the AWS IP space or not. This has multiple applications:
 
 - Continuous recon of assets
 - Gather assets using a specific service (e.g. EC2)
@@ -8,20 +8,20 @@
 - ... etc.
 
 
-![awsipcheck](https://user-images.githubusercontent.com/3582096/123559813-fe493980-d7bb-11eb-90f9-cd33942c0818.png)
+![onaws](https://user-images.githubusercontent.com/3582096/123628738-10b18a80-d831-11eb-8a1a-6b8cdb58dafd.png)
 
 
 # Install
 
 ```
-pip install awsipcheck
+pip install onaws
 ```
 
 # Usage
 
 ## Given an IP:
 ```
-awsipcheck 52.219.47.34
+onaws 52.219.47.34
 ```
 
 ## Given a hostname:
@@ -29,18 +29,18 @@ awsipcheck 52.219.47.34
 A domain or subdomain can be passed as input:
 
 ```
-awsipcheck example.com
+onaws example.com
 ```
 
 You may also supply an S3 bucket hostname as input:
 
 ```
-awsipcheck dropbox.s3.amazonaws.com
+onaws dropbox.s3.amazonaws.com
 ```
 
 # Output
 
-If the IP/hostname falls in the AWS IP range, `awsipcheck` will return the service, region and other details in the output:
+If the IP/hostname falls in the AWS IP range, `onaws` will return the service, region and other details in the output:
 
 ```
 {
