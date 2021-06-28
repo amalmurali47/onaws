@@ -11,4 +11,4 @@ classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 
 [tool.flit.scripts]
-awsipcheck = "awsipcheck:main"
+awsipcheck = "awsipcheck:__main__.main"

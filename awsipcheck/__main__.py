@@ -1,8 +1,13 @@
 from . import cli, core
 
-args = cli.parser.parse_args()
-args = cli.gather_input(args)
+def main():
+    args = cli.parser.parse_args()
+    args = cli.gather_input(args)
 
-prefixes = core.get_range_prefixes()
+    prefixes = core.get_range_prefixes()
 
-core.run(prefixes, args)
+    core.run(prefixes, args)
+
+
+if __name__ == "__main__":
+    main()

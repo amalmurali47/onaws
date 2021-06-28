@@ -1,7 +1,3 @@
-'''Simple library to check if a hostname belongs to AWS IP space.'''
-
-__version__ = '0.0.6'
-
 import ipaddress
 import json
 import re
@@ -75,7 +71,7 @@ def generate_response(result, ip_address=None, hostname=None):
         response = {'is_aws_ip': False}
         
     return response
-    
+
 
 def process_one(prefixes, host):
     if is_ip(host):
