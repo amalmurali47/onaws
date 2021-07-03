@@ -11,7 +11,6 @@ The tool could be used for:
 
 ![onaws](https://user-images.githubusercontent.com/3582096/123629032-684ff600-d831-11eb-8e22-7ab4bbac03e1.png)
 
-
 # Install
 
 ```shell
@@ -40,6 +39,7 @@ onaws dropbox.s3.amazonaws.com
 ```
 
 ## Given an input list
+
 `onaws` accepts line-delimited hosts on STDIN. This is helpful if you want to pipe the output of other tools to `onaws`:
 
 ```shell
@@ -124,6 +124,7 @@ For multiple inputs, the output format will be in JSONL:
 ## Errors
 
 If the input you provide is an invalid IP or is not resolvable, the output will indicate so:
+
 ```shell
 $ onaws 'invalid.invalid'
 {
@@ -138,7 +139,9 @@ If, for some reason, the tool fails to fetch the AWS IP ranges, it will throw th
 $ onaws
 Failed to get IP ranges from AWS
 ```
+
 # Contribution
+
 I welcome contributions from the public. If you find something that could be improved, please file an Issue or send a PR :)
 
 # Credits
