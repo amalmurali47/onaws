@@ -10,6 +10,13 @@ spec = {
             'action': 'store',
             'help': 'Input hostname / IP',
             'nargs': '?'
+        },
+        {
+            'options': ['-s'],
+            'dest': 'stream',
+            'action': 'store',
+            'choices': ['t', 'j'],
+            'help': 'stream output, t = text lines, j = json lines',
         }
     ],
     'epilog': "Examples:\n\
@@ -48,6 +55,7 @@ def sanitize(stream):
 def gather_input(args):
     hosts = sanitize(stream(args.input))
     return {
+        'stream': args.stream,
         'input': args.input,
         'hosts': hosts,
     }

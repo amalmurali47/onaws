@@ -96,10 +96,34 @@ def process(prefixes, args):
     for host in args['hosts']:
         print(f'Processing: {host}')
         results[host] = process_one(prefixes, host)
-    return json.dumps(dict(results), indent=4)
+    results = json.dumps(dict(results), indent=4)
+    print(results)
+
+
+t_cols = ['is_aws_ip', 'host', 'ip_address', 'service', 'region', 'matched_subnet']
+
+
+def t_row(host, result):
+    row = (str(result.get(col, '')) for col in t_cols)
+    return '\t'.join([host, *row])
+
+
+def j_row(host, result):
+    data = {'input': host, **result}
+    return json.dumps(data)
+
+
+
+def process_stream(prefixes, args):
+    func = globals()['{stream}_row'.format_map(args)]
+
+    for host in args['hosts']:
+        res = process_one(prefixes, host)
+        row = func(host, res)
+        print(row)
 
 
 def run(prefixes, args):
     # print(args['hosts'])
-    results = process(prefixes, args)
-    print(results)
+    f = process_stream if args['stream'] else process
+    f(prefixes, args)
