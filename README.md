@@ -121,6 +121,44 @@ For multiple inputs, the output format will be in JSONL:
 }
 ```
 
+If you want to save the output to a file, you can use Bash redirection or `tee`:
+
+```shell
+cat hosts | onaws | tee -a output.json
+```
+
+## More examples
+
+To get hosts that use EC2:
+
+```shell
+cat output.json | jq -scr '.[] | select(.service == "EC2") | .hostname'
+```
+Output:
+
+```
+groove.uber.com
+photos.uber.com
+photography.uber.com
+...
+```
+
+To get a list of hosts that use AWS services:
+
+```shell
+cat output.json | jq -sc '.[] | select(.is_aws_ip == true ) | [.hostname, .ip_address, .service] | join (",")' 
+```
+
+Output:
+
+```csv
+assets-share.uber.com,52.84.13.77,CLOUDFRONT
+groove.uber.com,3.223.41.171,EC2
+devbuilds.uber.com,52.84.13.29,CLOUDFRONT
+photos.uber.com,54.237.133.81,EC2
+...
+```
+
 ## Errors
 
 If the input you provide is an invalid IP or is not resolvable, the output will indicate so:
