@@ -1,9 +1,6 @@
 import ipaddress
 import json
-import re
 import socket
-import sys
-from collections import defaultdict
 
 import requests
 
