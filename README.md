@@ -7,21 +7,20 @@ The tool could be used for:
 - Continuous recon of assets
 - Gathering assets using a specific service (e.g. EC2)
 - Finding region information for S3 buckets
-- ... etc.
+- etc.
 
 ![onaws](https://user-images.githubusercontent.com/3582096/123629032-684ff600-d831-11eb-8e22-7ab4bbac03e1.png)
 
-
 # Install
 
-```
+```shell
 pip install onaws
 ```
 
 # Usage
 
 ## Given an IP:
-```
+```shell
 onaws 52.219.47.34
 ```
 
@@ -29,56 +28,64 @@ onaws 52.219.47.34
 
 A domain or subdomain can be passed as input:
 
-```
+```shell
 onaws example.com
 ```
 
 You may also supply an S3 bucket hostname as input:
 
-```
+```shell
 onaws dropbox.s3.amazonaws.com
 ```
 
-## List of hostnames
+## Given an input list
+
 `onaws` accepts line-delimited hosts on STDIN. This is helpful if you want to pipe the output of other tools to `onaws`:
 
-```
+```shell
 $ cat hosts.txt
 uber.s3.amazonaws.com
 aws.com
 google.com
+23.21.52.140
 
 
 $ cat hosts.txt | onaws
 {
-    "uber.s3.amazonaws.com": {
-        "is_aws_ip": true,
-        "ip_address": "52.218.46.121",
-        "service": "S3",
-        "region": "eu-west-1",
-        "matched_subnet": "52.218.0.0/17",
-        "hostname": "uber.s3.amazonaws.com"
-    },
-    "aws.com": {
-        "is_aws_ip": true,
-        "ip_address": "52.84.13.117",
-        "service": "CLOUDFRONT",
-        "region": "GLOBAL",
-        "matched_subnet": "52.84.0.0/15",
-        "hostname": "aws.com"
-    },
-    "google.com": {
-        "is_aws_ip": false
-    }
+    "is_aws_ip": true,
+    "ip_address": "52.218.106.162",
+    "service": "S3",
+    "region": "eu-west-1",
+    "matched_subnet": "52.218.0.0/17",
+    "hostname": "uber.s3.amazonaws.com"
 }
-
+{
+    "is_aws_ip": true,
+    "ip_address": "143.204.225.9",
+    "service": "CLOUDFRONT",
+    "region": "GLOBAL",
+    "matched_subnet": "143.204.0.0/16",
+    "hostname": "aws.com"
+}
+{
+    "is_aws_ip": false,
+    "ip_address": "216.58.201.238",
+    "hostname": "google.com"
+}
+{
+    "is_aws_ip": true,
+    "ip_address": "23.21.52.140",
+    "service": "EC2",
+    "region": "us-east-1",
+    "matched_subnet": "23.20.0.0/14"
+}
 ```
 
 # Output
 
 If the IP/hostname falls in the AWS IP range, `onaws` will return the service, region and other details in the output:
 
-```
+```json
 {
     "is_aws_ip": true,
     "ip_address": "52.218.196.155",
@@ -89,7 +96,52 @@ If the IP/hostname falls in the AWS IP range, `onaws` will return the service, r
 }
 ```
 
+For multiple inputs, the output format will be in JSONL:
+
+```json
+{
+    "is_aws_ip": true,
+    "ip_address": "143.204.225.9",
+    "service": "CLOUDFRONT",
+    "region": "GLOBAL",
+    "matched_subnet": "143.204.0.0/16",
+    "hostname": "aws.com"
+}
+{
+    "is_aws_ip": false,
+    "ip_address": "216.58.201.238",
+    "hostname": "google.com"
+}
+{
+    "is_aws_ip": true,
+    "ip_address": "23.21.52.140",
+    "service": "EC2",
+    "region": "us-east-1",
+    "matched_subnet": "23.20.0.0/14"
+}
+```
+
+## Errors
+
+If the input you provide is an invalid IP or is not resolvable, the output will indicate so:
+
+```shell
+$ onaws 'invalid.invalid'
+{
+    "hostname": "invalid.invalid",
+    "resolvable": false
+}
+```
+
+If, for some reason, the tool fails to fetch the AWS IP ranges, it will throw the following exception:
+
+```shell
+$ onaws
+Failed to get IP ranges from AWS
+```
+
 # Contribution
+
 I welcome contributions from the public. If you find something that could be improved, please file an Issue or send a PR :)
 
 # Credits
