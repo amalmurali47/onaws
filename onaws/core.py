@@ -12,8 +12,7 @@ def get_range_prefixes():
         data = requests.get(AWS_IP_RANGES_URL, timeout=10).json()
     except Exception:
         raise SystemExit('Failed to get IP ranges from AWS')
-    else:
-        return data['prefixes']
+    return data['prefixes']
 
 
 def resolve(hostname):
@@ -31,26 +30,19 @@ def is_ip(string):
 
 
 def find_prefix(prefixes, ip):
-    amz_prefix = None
-    non_amz_prefix = None
+    result_prefix = None
 
     # We probably can't rely on the order of prefixes being alphabetical.
     # So try to find any non-AMAZON services with higher precedence.
     # If none found, return the AMAZON service.
     for prefix in prefixes:
         subnet = ipaddress.ip_network(prefix['ip_prefix'])
-
         if ip in subnet:
-            if prefix['service'] == 'AMAZON':
-                amz_prefix = prefix
-            else:
-                non_amz_prefix = prefix
+            result_prefix = prefix
+            if prefix['service'] != 'AMAZON':
                 break
 
-    if non_amz_prefix:
-        return non_amz_prefix
-
-    return amz_prefix
+    return result_prefix
 
 
 def generate_response(result, ip_address=None, hostname=None):
