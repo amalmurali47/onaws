@@ -1,6 +1,7 @@
 import ipaddress
 import json
 import socket
+import pytricia
 
 
 def resolve(hostname):
@@ -17,20 +18,18 @@ def is_ip(string):
         return False
 
 
-def find_prefix(prefixes, ip):
-    result_prefix = None
-
-    # We probably can't rely on the order of prefixes being alphabetical.
-    # So try to find any non-AMAZON services with higher precedence.
-    # If none found, return the AMAZON service.
+def get_prefix_tree(prefixes):
+    tree = pytricia.PyTricia()
     for prefix in prefixes:
-        subnet = ipaddress.ip_network(prefix['ip_prefix'])
-        if ip in subnet:
-            result_prefix = prefix
-            if prefix['service'] != 'AMAZON':
-                break
+        tree[prefix["ip_prefix"]] = prefix
+    return tree
 
-    return result_prefix
+
+def find_prefix(prefix_tree, ip):
+    try:
+        return prefix_tree[ip]
+    except KeyError:
+        return None
 
 
 def generate_response(result, ip_address=None, hostname=None):
@@ -52,7 +51,7 @@ def generate_response(result, ip_address=None, hostname=None):
     return response
 
 
-def process_one(prefixes, host):
+def process_one(prefix_tree, host):
     if is_ip(host):
         hostname = None
         ip_address = host
@@ -62,15 +61,15 @@ def process_one(prefixes, host):
         if not ip_address:
             return {'hostname': hostname, 'resolvable': False}
 
-    result = find_prefix(prefixes, ipaddress.ip_address(ip_address))
+    result = find_prefix(prefix_tree, ip_address)
     return generate_response(result, hostname=hostname, ip_address=ip_address)
 
 
-def process(prefixes, args):
+def process(prefix_tree, args):
     for host in args['hosts']:
-        yield json.dumps(process_one(prefixes, host), indent=4)
+        yield json.dumps(process_one(prefix_tree, host), indent=4)
 
 
-def run(prefixes, args):
-    for result in process(prefixes, args):
+def run(prefix_tree, args):
+    for result in process(prefix_tree, args):
         print(result)
