@@ -41,9 +41,6 @@ def get_range_prefixes():
     local_digest = hexdigest(data)
     remote_digest = get_remote_etag()
     if local_digest != remote_digest:
-        try:
-            data = get_remote_data()
-        except:
-            raise SystemExit('Failed to get IP ranges from AWS')
+        data = get_remote_data()
         save_local_data(data)
     return json.loads(data)['prefixes']
