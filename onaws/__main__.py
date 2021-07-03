@@ -8,8 +8,9 @@ def main():
         prefixes = ipranges.get_range_prefixes()
     except:
         raise SystemExit('Failed to get AWS IP ranges')
+    prefix_tree = core.get_prefix_tree(prefixes)
 
-    core.run(prefixes, args)
+    core.run(prefix_tree, args)
 
 
 if __name__ == "__main__":
