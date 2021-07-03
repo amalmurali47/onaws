@@ -54,28 +54,28 @@ def generate_response(result, ip_address=None, hostname=None):
             'region': result['region'],
             'matched_subnet': result['ip_prefix']
         }
-        if hostname:
-            response['hostname'] = hostname
     else:
-        response = {'is_aws_ip': False}
-        
+        response = {
+            'is_aws_ip': False,
+            'ip_address': ip_address
+        }
+    if hostname:
+        response['hostname'] = hostname
     return response
 
 
 def process_one(prefixes, host):
     if is_ip(host):
-        result = find_prefix(prefixes, ipaddress.ip_address(host))
-        response = generate_response(result, ip_address=host)
-        return response
+        hostname = None
+        ip_address = host
     else:
+        hostname = host
         ip_address = resolve(host)
-        if ip_address:
-            result = find_prefix(prefixes, ipaddress.ip_address(ip_address))
-            response = generate_response(result, hostname=host, ip_address=ip_address)
-            return response
-        else:
-            return {'resolvable': False}
+        if not ip_address:
+            return {'hostname': hostname, 'resolvable': False}
 
+    result = find_prefix(prefixes, ipaddress.ip_address(ip_address))
+    return generate_response(result, hostname=hostname, ip_address=ip_address)
 
 def process(prefixes, args):
     if args['input']:
