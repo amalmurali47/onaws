@@ -137,7 +137,7 @@ If, for some reason, the tool fails to fetch the AWS IP ranges, it will throw th
 
 ```shell
 $ onaws
-Failed to get IP ranges from AWS
+Failed to get AWS IP ranges
 ```
 
 # Contribution
