@@ -2,18 +2,6 @@ import ipaddress
 import json
 import socket
 
-import requests
-
-AWS_IP_RANGES_URL = 'https://ip-ranges.amazonaws.com/ip-ranges.json'
-
-
-def get_range_prefixes():
-    try:
-        data = requests.get(AWS_IP_RANGES_URL, timeout=10).json()
-    except Exception:
-        raise SystemExit('Failed to get IP ranges from AWS')
-    return data['prefixes']
-
 
 def resolve(hostname):
     try:
