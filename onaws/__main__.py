@@ -1,10 +1,13 @@
-from . import cli, core
+from . import cli, core, ipranges
 
 def main():
     args = cli.parser.parse_args()
     args = cli.gather_input(args)
 
-    prefixes = core.get_range_prefixes()
+    try:
+        prefixes = ipranges.get_range_prefixes()
+    except:
+        raise SystemExit('Failed to get AWS IP ranges')
 
     core.run(prefixes, args)
 
