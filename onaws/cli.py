@@ -37,19 +37,17 @@ parser = create_parser(spec)
 
 def get_raw_input(input_str):
     if input_str is None:
-        return sys.stdin.read()
-
-    return input_str
+        return sys.stdin
+    return [input_str]
 
 
 def parse_raw_input(text):
-    return [line.strip() for line in text.strip().splitlines() if line.strip()]
-
+    lines = (line.strip() for line in text)
+    return (line for line in lines if line)
 
 def gather_input(args):
     raw = get_raw_input(args.input)
     hosts = parse_raw_input(raw)
     return {
-        'input': args.input,
         'hosts': hosts,
     }
