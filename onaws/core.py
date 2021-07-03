@@ -20,12 +20,12 @@ def resolve(hostname):
     try:
         return socket.gethostbyname(hostname)
     except socket.gaierror:
-        return False
+        return None
 
 
 def is_ip(string):
     try:
-        return ipaddress.ip_address(string)
+        return bool(ipaddress.ip_address(string))
     except ValueError:
         return False
 
