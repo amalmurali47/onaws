@@ -37,7 +37,7 @@ parser = create_parser(spec)
 
 def get_raw_input(input_str):
     if input_str is None:
-        return iter(sys.stdin)
+        return sys.stdin
     return [input_str]
 
 
