@@ -77,18 +77,12 @@ def process_one(prefixes, host):
     result = find_prefix(prefixes, ipaddress.ip_address(ip_address))
     return generate_response(result, hostname=hostname, ip_address=ip_address)
 
-def process(prefixes, args):
-    if args['input']:
-        return json.dumps(process_one(prefixes, args['input']), indent=4)
 
-    results = defaultdict()
+def process(prefixes, args):
     for host in args['hosts']:
-        print(f'Processing: {host}')
-        results[host] = process_one(prefixes, host)
-    return json.dumps(dict(results), indent=4)
+        yield json.dumps(process_one(prefixes, host), indent=4)
 
 
 def run(prefixes, args):
-    # print(args['hosts'])
-    results = process(prefixes, args)
-    print(results)
+    for result in process(prefixes, args):
+        print(result)
