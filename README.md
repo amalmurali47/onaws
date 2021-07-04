@@ -40,6 +40,8 @@ onaws dropbox.s3.amazonaws.com
 
 ## Given an input list
 
+### WARNING: onaws resolves each hostname individually, so if you're going to supply many hostnames, it's significantly faster to resolve them first with a tool like [MassDNS](https://github.com/blechschmidt/massdns)!
+
 `onaws` accepts line-delimited hosts on STDIN. This is helpful if you want to pipe the output of other tools to `onaws`:
 
 ```shell
