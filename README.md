@@ -2,14 +2,16 @@
 
 `onaws` is a simple tool to check if an IP/hostname belongs to the AWS IP space or not. It uses the [AWS IP address ranges data](https://docs.aws.amazon.com/general/latest/gr/aws-ip-ranges.html) published by AWS to perform the search.
 
-The tool could be used for:
+The tool could be helpful in:
 
 - Continuous recon of assets
-- Gathering assets using a specific service (e.g. EC2)
+- Gathering assets that use a specific service (e.g. EC2)
+- Subdomain/DNS takeovers
 - Finding region information for S3 buckets
 - etc.
 
-![onaws](https://user-images.githubusercontent.com/3582096/123629032-684ff600-d831-11eb-8e22-7ab4bbac03e1.png)
+![onaws](https://user-images.githubusercontent.com/3582096/124377256-bac56280-dcc8-11eb-9a3f-fa689abaa12b.png)
+
 
 # Install
 
@@ -17,6 +19,11 @@ The tool could be used for:
 pip install onaws
 ```
 
+# Upgrade
+
+```shell
+pip install -U onaws
+```
 # Usage
 
 ## Given an IP:
@@ -40,7 +47,7 @@ onaws dropbox.s3.amazonaws.com
 
 ## Given an input list
 
-### WARNING: onaws resolves each hostname individually, so if you're going to supply many hostnames, it's significantly faster to resolve them first with a tool like [MassDNS](https://github.com/blechschmidt/massdns)!
+**WARNING:** `onaws` resolves each hostname individually, so if you're going to supply many hostnames, it's significantly faster to resolve them first with a tool like [MassDNS](https://github.com/blechschmidt/massdns)!
 
 `onaws` accepts line-delimited hosts on STDIN. This is helpful if you want to pipe the output of other tools to `onaws`:
 
