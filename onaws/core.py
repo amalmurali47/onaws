@@ -17,11 +17,16 @@ def is_ip(string):
     except ValueError:
         return False
 
+def get_prefix_val(prefix_obj):
+    try:
+        return prefix_obj['ip_prefix']
+    except KeyError:
+        return prefix_obj['ipv6_prefix']
 
 def get_prefix_tree(prefixes):
-    tree = pytricia.PyTricia()
+    tree = pytricia.PyTricia(128)
     for prefix in prefixes:
-        tree[prefix["ip_prefix"]] = prefix
+        tree[get_prefix_val(prefix)] = prefix
     return tree
 
 
@@ -39,7 +44,7 @@ def generate_response(result, ip_address=None, hostname=None):
             'ip_address': ip_address,
             'service': result['service'],
             'region': result['region'],
-            'matched_subnet': result['ip_prefix']
+            'matched_subnet': get_prefix_val(result)
         }
     else:
         response = {

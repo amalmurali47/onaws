@@ -43,4 +43,5 @@ def get_range_prefixes():
     if local_digest != remote_digest:
         data = get_remote_data()
         save_local_data(data)
-    return json.loads(data)['prefixes']
+    data_json = json.loads(data)
+    return data_json['prefixes'] + data_json['ipv6_prefixes']
