@@ -1,1 +1,3 @@
-'''Simple library to check if a hostname belongs to AWS IP space.'''
+'''Library to fetch the details of assets hosted on AWS.'''
+
+__version__ = "develop"
