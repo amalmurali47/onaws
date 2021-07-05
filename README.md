@@ -90,6 +90,14 @@ $ cat hosts.txt | onaws
 }
 ```
 
+## Many hostnames
+
+onaws accepts hostnames as input, but it resolves them individually with no optimization. Therefore, it's *significantly* faster to do the resolution first with a tool like [MassDNS](https://github.com/blechschmidt/massdns) or [dnsx](https://github.com/projectdiscovery/dnsx):
+
+```shell
+cat hosts.txt | dnsx -silent -a -resp-only | onaws
+```
+
 # Output
 
 If the IP/hostname falls in the AWS IP range, `onaws` will return the service, region and other details in the output:
