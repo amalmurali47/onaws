@@ -47,8 +47,6 @@ onaws dropbox.s3.amazonaws.com
 
 ## Given an input list
 
-**WARNING:** `onaws` resolves each hostname individually, so if you're going to supply many hostnames, it's significantly faster to resolve them first with a tool like [MassDNS](https://github.com/blechschmidt/massdns)!
-
 `onaws` accepts line-delimited hosts on STDIN. This is helpful if you want to pipe the output of other tools to `onaws`:
 
 ```shell
@@ -88,6 +86,14 @@ $ cat hosts.txt | onaws
     "region": "us-east-1",
     "matched_subnet": "23.20.0.0/14"
 }
+```
+
+## Many hostnames
+
+onaws accepts hostnames as input, but it resolves them individually with no optimization. Therefore, it's *significantly* faster to do the resolution first with a tool like [MassDNS](https://github.com/blechschmidt/massdns) or [dnsx](https://github.com/projectdiscovery/dnsx):
+
+```shell
+cat hosts.txt | dnsx -silent -a -resp-only | onaws
 ```
 
 # Output
