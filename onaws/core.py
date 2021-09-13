@@ -2,7 +2,7 @@ import ipaddress
 import json
 import socket
 import pytricia
-
+import sys
 
 def resolve(hostname):
     try:
@@ -72,9 +72,14 @@ def process_one(prefix_tree, host):
 
 def process(prefix_tree, args):
     for host in args['hosts']:
-        yield json.dumps(process_one(prefix_tree, host), indent=4)
+        yield process_one(prefix_tree, host)
 
 
 def run(prefix_tree, args):
-    for result in process(prefix_tree, args):
-        print(result)
+    if args['outfile_path']:
+        with open(args['outfile_path'], 'w') as f:
+            for result in process(prefix_tree, args):
+                f.write(str(result) + '\n')
+    else:
+        for result in process(prefix_tree, args):
+            print(json.dumps(result, indent=4))
