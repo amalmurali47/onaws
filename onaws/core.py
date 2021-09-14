@@ -79,7 +79,7 @@ def run(prefix_tree, args):
     if args['outfile_path']:
         with open(args['outfile_path'], 'w') as f:
             for result in process(prefix_tree, args):
-                f.write(str(result) + '\n')
+                f.write(json.dumps(result) + '\n')
     else:
         for result in process(prefix_tree, args):
             print(json.dumps(result, indent=4))
