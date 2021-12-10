@@ -27,7 +27,7 @@ def main():
             "Operating System :: OS Independent",
         ],
         python_requires=">=3.6",
-        entry_points={"console_scripts": ["onaws = onaws:__main__.main"]},
+        entry_points={"console_scripts": ["onaws = onaws.__main__:main"]},
         install_requires=[
             "requests >= 2.25.1",
             "pytricia >= 1.0.2"
